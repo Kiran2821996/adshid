@@ -1,0 +1,40 @@
+/* <<<<<<<<<<<<<<<<<   HEADER NAVBAR -- START   >>>>>>>>>>>>>>>>>>>>>>> */
+
+.bg-grey-cust{
+  background-color: #1c1c1c;
+}
+
+@media only screen and (max-width:639px) {
+  .right-cust{
+    right: 13%;
+  }
+}
+/* <<<<<<<<<<<<<<<<<   HEADER NAVBAR -- END   >>>>>>>>>>>>>>>>>>>>>>> */
+/* <<<<<<<<<<<<<<<<<   BANNER -- START   >>>>>>>>>>>>>>>>>>>>>>> */
+@media only screen and (max-width:375px) {
+  .img-max-width-cust{
+    max-width: 40%;
+  }
+}
+/* <<<<<<<<<<<<<<<<<   BANNER -- END   >>>>>>>>>>>>>>>>>>>>>>> */
+/* <<<<<<<<<<<<<<<<<   COURSESELLING-- START   >>>>>>>>>>>>>>>>>>>>>>> */
+.slick-next {
+  right: 10px !important;
+}
+.slick-prev:before, .slick-next:before {
+  font-size: 60px !important;
+}
+.slick-prev {
+  left: -30px !important;
+  z-index: 1 !important;
+}
+
+.slick-dots li button{
+  background-color: white !important;
+}
+
+.slick-dots .slick-active button{
+  background-color: #f49d0d !important;
+}
+
+/* <<<<<<<<<<<<<<<<<   COURSESELLING-- END   >>>>>>>>>>>>>>>>>>>>>>> */
