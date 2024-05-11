@@ -1,4 +1,7 @@
-import React, { useState, useRef, Fragment, useEffect } from 'react'
+import React, { useState, useRef, Fragment, useEffect ,useCallback } from 'react'
+import axios from 'axios';
+
+
 import { Dialog, Transition } from '@headlessui/react'
 import { ShoppingCartIcon, CreditCardIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
 
@@ -12,6 +15,8 @@ export default function Cart() {
     const [open, setOpen] = useState(false)
     const [openpd, setOpenpd] = useState(false)
     const [openpg, setOpenpg] = useState(false)
+
+    const [razorpayInfo,setRazorpayInfo] = useState()
 
     const cancelButtonRef = useRef(null)
 
@@ -88,10 +93,109 @@ export default function Cart() {
         return errors;
     };
 
-    const handleSubmit = (e) => {
+    const paymentHandler = async () => {
+        const response = await fetch("http://localhost:8000/order", {
+          method: "POST",
+          body: JSON.stringify({
+            amount:getTotal().totalPrice*100,
+            currency:"INR",
+            receipt: "JEWIOEEJE",
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const order = await response.json();
+        console.log(order);
+        var options = {
+            key: "rzp_test_rY0f8xh1kHOO4A", // Enter the Key ID generated from the Dashboard
+            amount:getTotal().totalPrice*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency:"INR",
+            name: "Acme Corp", //your business name
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            handler: async function (response) {
+                const body = {
+                  ...response,
+                };
+        
+                const validateRes = await fetch(
+                  "http://localhost:8000/order/validate",
+                  {
+                    method: "POST",
+                    body: JSON.stringify(body),
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                const jsonRes = await validateRes.json();
+                setRazorpayInfo(jsonRes);
+                console.log(jsonRes);
+              },
+            prefill: {
+              //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+              name: formData.name, //your customer's name
+              email: formData.email,
+              contact: formData.mobile, //Provide the customer's phone number for better conversion rates
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+          var rzp1 = new window.Razorpay(options);
+          rzp1.on("payment.failed", function (response) {
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+          });
+          rzp1.open();
+    }
+
+    const  handleSubmit = async (e) => {
         e.preventDefault();
         const errors = validateForm(formData);
         if (Object.keys(errors).length === 0) {
+            try {
+                paymentHandler();
+                const config = {
+                    url: "/order/createorder",
+                    baseURL: "http://localhost:8000/api",
+                    method: "post",
+                    header: { "Content-type": "application/json" },
+                    data: {
+                        razorpayInfo,
+                        formData,
+                        totalPrice: getTotal().totalPrice,
+                        totalItems: getTotal().totalQuantity,
+                        cartItems: cart.map(item => ({
+                            id: item._id,
+                            title: item.title,
+                            price: item.price,
+                            quantity: item.quantity,
+                        })),
+                    },
+                };
+            
+                let response = await axios(config);
+                console.log(response, "response");
+                
+    
+                // Handle success, e.g., show confirmation message or redirect to order page
+                console.log('Order created successfully');
+            } catch (error) {
+                // Handle error
+                console.error('Error creating order:', error.message);
+            }
+
             setOpen(false);
             setOpenpd(false);
             setOpenpg(true);
@@ -101,6 +205,7 @@ export default function Cart() {
         }
     };
 
+    
 
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);
