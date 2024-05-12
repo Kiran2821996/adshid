@@ -3,8 +3,8 @@ const OrderModal = require('../Modal/Order');
 class Order {
   async createOrder(req, res) {
     try {
-        const { razorpayInfo,formData, totalPrice, totalItems, cartItems } = req.body;
-        const order = new OrderModal({ razorpayInfo,formData, totalPrice, totalItems, cartItems });
+        const { razorpayInfo,formData, totalPrice, totalItems, cartItems, orderStatus } = req.body;
+        const order = new OrderModal({ razorpayInfo,formData, totalPrice, totalItems, cartItems , orderStatus});
         let savedOrder = await order.save();
         if (savedOrder) {
             return res.status(200).json({ message: 'Order created successfully', order: savedOrder });
@@ -36,8 +36,8 @@ class Order {
   async updateOrder(req, res) {
     try {
         const { id } = req.params;
-        const {razorpayInfo, formData, totalPrice, totalItems, cartItems } = req.body;
-        const updatedOrder = await OrderModal.findByIdAndUpdate(id, { razorpayInfo,formData, totalPrice, totalItems, cartItems }, { new: true });
+        const {razorpayInfo, formData, totalPrice, totalItems, cartItems,orderStatus } = req.body;
+        const updatedOrder = await OrderModal.findByIdAndUpdate(id, { razorpayInfo,formData, totalPrice, totalItems, cartItems ,orderStatus}, { new: true });
         res.status(200).json({ message: 'Order updated successfully', order: updatedOrder });
     } catch (err) {
         res.status(400).json({ error: err.message });

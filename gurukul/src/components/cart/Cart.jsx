@@ -1,6 +1,7 @@
-import React, { useState, useRef, Fragment, useEffect ,useCallback } from 'react'
+import React, { useState, useRef, Fragment, useEffect, useCallback } from 'react'
 import axios from 'axios';
 
+import emailjs from '@emailjs/browser';
 
 import { Dialog, Transition } from '@headlessui/react'
 import { ShoppingCartIcon, CreditCardIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
@@ -93,97 +94,134 @@ export default function Cart() {
     };
 
 
-    const [razorpayInfo,setRazorpayInfo] = useState()
+    const [razorpayInfo, setRazorpayInfo] = useState()
 
     useEffect(() => {
         // This effect will run whenever razorpayInfo changes
         if (razorpayInfo) {
-          const config = {
-            url: "/order/createorder",
-            baseURL: "http://localhost:8000/api",
-            method: "post",
-            header: { "Content-type": "application/json" },
-            data: {
-              razorpayInfo,
-              formData,
-              totalPrice: getTotal().totalPrice,
-              totalItems: getTotal().totalQuantity,
-              cartItems: cart.map(item => ({
-                id: item._id,
-                title: item.title,
-                price: item.price,
-                quantity: item.quantity,
-              })),
-            },
-          };
-      
-          axios(config)
-            .then(response => {
-              setOpen(false);
-              setOpenpd(false);
-              setOpenpg(true);
-            })
-            .catch(error => {
-              // Handle error
-              console.error('Error creating order:', error);
-            });
+            const config = {
+                url: "/order/createorder",
+                baseURL: "https://abhishad.onrender.com/api",
+                method: "post",
+                header: { "Content-type": "application/json" },
+                data: {
+                    razorpayInfo,
+                    formData,
+                    totalPrice: getTotal().totalPrice,
+                    totalItems: getTotal().totalQuantity,
+                    cartItems: cart.map(item => ({
+                        id: item._id,
+                        title: item.title,
+                        price: item.price,
+                        quantity: item.quantity,
+                    })),
+                    orderStatus: "PENDING"
+                },
+            };
+
+            axios(config)
+                .then(response => {
+                    console.log(response);
+                    const order = response.data.order;
+                    console.log(response.data.order);
+                    // const templateParams = {
+                    //     email_to: `${order.formData.email}`,
+                    //     to_name: `${order.formData.name}`,
+                    //     from_name: 'Kiran',
+                    //     message: `
+                    //    <p>Thank you for your order, <strong>${order.formData.name}</strong>!</p>
+                    //             <p>Your order details are as follows:</p>
+                    //             <div class="order-details">
+                    //                 ${order.cartItems.map(item => `
+                    //                     <div class="item">
+                    //                         <p><strong>Item:</strong> ${item.title}</p>
+                    //                         <p><strong>Price:</strong> $${item.price}</p>
+                    //                         <p><strong>Quantity:</strong> ${item.quantity}</p>
+                    //                     </div>
+                    //                 `).join('')}
+                    //                 <p><strong>Total Price:</strong> $${order.totalPrice}</p>
+                    //             </div>
+                    //             <p>Your order has been created successfully. We will send a confirmation email to <strong>${order.formData.confirmEmail}</strong>.</p>
+                    //             <p>For any inquiries, please contact us at <strong>${order.formData.email}</strong> or <strong>${order.formData.mobile}</strong>.</p>
+                    //             <p>Order ID: <strong>${order.razorpayInfo.orderId}</strong></p>
+                    //             <p>Payment ID: <strong>${order.razorpayInfo.paymentId}</strong></p>
+                    // `,
+                    // };
+
+                    // emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
+                    //     publicKey: 'DT7q2FNyO0BX-rkLf',
+                    // })
+                    //     .then(() => {
+                    //         console.log('Order summary email sent successfully!');
+                    //     })
+                    //     .catch((error) => {
+                    //         console.error('Error sending email:', error);
+                    //     });
+                    setOpen(false);
+                    setOpenpd(false);
+                    setOpenpg(true);
+                })
+                .catch(error => {
+                    // Handle error
+                    console.error('Error creating order:', error);
+                });
         }
-      }, [razorpayInfo, formData, cart]); 
+    }, [razorpayInfo, formData, cart]);
 
     const paymentHandler = async () => {
-        const response = await fetch("http://localhost:8000/order", {
-          method: "POST",
-          body: JSON.stringify({
-            amount:getTotal().totalPrice*100,
-            currency:"INR",
-            receipt: "JEWIOEEJE",
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
+        const response = await fetch("https://abhishad.onrender.com/order", {
+            method: "POST",
+            body: JSON.stringify({
+                amount: getTotal().totalPrice * 100,
+                currency: "INR",
+                receipt: "JEWIOEEJE",
+            }),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
         const order = await response.json();
         var options = {
             key: "rzp_test_rY0f8xh1kHOO4A", // Enter the Key ID generated from the Dashboard
-            amount:getTotal().totalPrice*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            currency:"INR",
+            amount: getTotal().totalPrice * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
             name: "Acme Corp", //your business name
             description: "Test Transaction",
             image: "https://example.com/your_logo",
             order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             handler: async function (response) {
                 const body = {
-                  ...response,
+                    ...response,
                 };
-        
+
                 const validateRes = await fetch(
-                  "http://localhost:8000/order/validate",
-                  {
-                    method: "POST",
-                    body: JSON.stringify(body),
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                  }
+                    "https://abhishad.onrender.com/order/validate",
+                    {
+                        method: "POST",
+                        body: JSON.stringify(body),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
                 );
                 const jsonRes = await validateRes.json();
                 setRazorpayInfo(jsonRes);
-              },
+            },
             prefill: {
-              //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
-              name: formData.name, //your customer's name
-              email: formData.email,
-              contact: formData.mobile, //Provide the customer's phone number for better conversion rates
+                //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                name: formData.name, //your customer's name
+                email: formData.email,
+                contact: formData.mobile, //Provide the customer's phone number for better conversion rates
             },
             notes: {
-              address: "Razorpay Corporate Office",
+                address: "Razorpay Corporate Office",
             },
             theme: {
-              color: "#3399cc",
+                color: "#3399cc",
             },
-          };
-          var rzp1 = new window.Razorpay(options);
-          rzp1.on("payment.failed", function (response) {
+        };
+        var rzp1 = new window.Razorpay(options);
+        rzp1.on("payment.failed", function (response) {
             alert(response.error.code);
             alert(response.error.description);
             alert(response.error.source);
@@ -191,17 +229,17 @@ export default function Cart() {
             alert(response.error.reason);
             alert(response.error.metadata.order_id);
             alert(response.error.metadata.payment_id);
-          });
-          rzp1.open();
+        });
+        rzp1.open();
     }
 
-    const  handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const errors = validateForm(formData);
         if (Object.keys(errors).length === 0) {
             try {
-                 paymentHandler();
-                
+                paymentHandler();
+
             } catch (error) {
                 // Handle error
                 console.error('Error creating order:', error.message);
@@ -212,7 +250,7 @@ export default function Cart() {
         }
     };
 
-    
+
 
     window.onbeforeunload = function () {
         window.scrollTo(0, 0);

@@ -27,7 +27,7 @@ function Home() {
     try {
       const config = {
         url: "/course/addcourse",
-        baseURL: "http://localhost:8000/api",
+        baseURL: "https://abhishad.onrender.com/api",
         method: "post",
         header: { "Content-type": "application/json" },
         data: {
@@ -49,7 +49,7 @@ function Home() {
   const handleUpdate = async () => {
     try {
       const config = {
-        url: `http://localhost:8000/api/course/update/${Editdata._id}`,
+        url: `https://abhishad.onrender.com/api/course/update/${Editdata._id}`,
        
         method: "put",
         header: { "Content-type": "application/json" },
@@ -74,7 +74,7 @@ function Home() {
   useEffect(() => { getAllCourse() }, [])
   const getAllCourse = async () => {
     try {
-      let response = await axios.get("http://localhost:8000/api/course/getdata");
+      let response = await axios.get("https://abhishad.onrender.com/api/course/getdata");
       if (response.status === 200) {
         setCourseData(response.data)
       }
@@ -118,7 +118,7 @@ function Home() {
   const handleDelete = async (id) => {
     try {
       let response = await
-        axios.post(`http://localhost:8000/api/course/trash/${id}`);
+        axios.post(`https://abhishad.onrender.com/api/course/trash/${id}`);
 
       if (response.status === 200) {
         alert("Deleted succesfully")

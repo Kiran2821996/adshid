@@ -26,7 +26,7 @@ function Register() {
     try {
       const config = {
         url: "/auth/register",
-        baseURL: "http://localhost:8000/api",
+        baseURL: "https://abhishad.onrender.com/api",
         method: "post",
         header: { "Content-type": "application/json" },
         data: {

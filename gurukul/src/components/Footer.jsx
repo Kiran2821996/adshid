@@ -74,7 +74,7 @@ function Footer() {
       try{
       const config = {
         url: "/contact/addcontact",
-        baseURL: "http://localhost:8000/api",
+        baseURL: "https://abhishad.onrender.com/api",
         method: "post",
         header: { "Content-type": "application/json" },
         data: {

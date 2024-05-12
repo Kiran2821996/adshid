@@ -1,26 +1,41 @@
 import DataTable from "react-data-table-component";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-export default function ContactDetails() {
+export default function OrderSummary() {
     const [CDeatils, setCDeatils] = useState([]);
     const columns = [
         {
+            name: "Order Id",
+            selector: row => row._id,
+        },
+        {
             name: "Name",
-            selector: row => row.name,
+            selector: row => row.formData.name,
+        },
+        {
+            name: "Mobile",
+            selector: row => row.formData.mobile,
         },
         {
             name: "Email",
-            selector: row => row.email,
+            selector: row => row.formData.confirmEmail,
         },
         {
-            name: "Phone Number",
-            selector: row => row.phone,
+            name: "Cart Itmes",
+            selector: row => row.cartItems.map((items)=>items.title),
         },
         {
-            name: "Message",
-            selector: row => row.message,
+            name: "Total Items",
+            selector: row => row.totalItems,
         },
-
+        {
+            name: "Total Price",
+            selector: row => row.totalPrice,
+        },
+        {
+            name: "Order Status",
+            selector: row => row.orderStatus,
+        }
     ];
 
     useEffect(() => {
@@ -29,7 +44,7 @@ export default function ContactDetails() {
     const getAllcontact = async () => {
         try {
             let response = await axios.get(
-                "https://abhishad.onrender.com/api/contact/getdata"
+                "https://abhishad.onrender.com/api/order/getorders"
             );
             if (response.status === 200) {
                 setCDeatils(response.data);

@@ -6,7 +6,7 @@ export default function Sidebar() {
             <div className='row '>
                 <Link className=' ' to="/dashboard">Add Course</Link>
                 <Link className='' to="/contactDetails">Contact Details</Link>
-                <Link className=''>Order Details</Link>
+                <Link className='' to="/orderSummary">Order Details</Link>
             </div>
         </div>
     )

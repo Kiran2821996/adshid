@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { type } = require('os');
 
 const CartItemSchema = new mongoose.Schema({
     id: {
@@ -40,6 +41,10 @@ const OrderSchema = new mongoose.Schema({
     cartItems: {
         type: [CartItemSchema],
         required: true
+    },
+    orderStatus:{
+        type: String,
+        required:true
     }
 });
 

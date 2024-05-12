@@ -17,7 +17,7 @@ const Carousel = () => {
 
   const getData=async()=>{
     try {
-      let response = await axios.get("http://localhost:8000/api/course/getdata")
+      let response = await axios.get("https://abhishad.onrender.com/api/course/getdata")
       if(response.status===200){
         setCardsData(response.data);
       }
