@@ -39,12 +39,11 @@ function Home() {
       };
 
       let response = await axios(config);
-      console.log(response, "response");
       if (response.status === 200) {
         alert("Course added Succesfully");
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   };
   const handleUpdate = async () => {
@@ -63,13 +62,12 @@ function Home() {
       };
 
       let response = await axios(config);
-      console.log(response, "response");
       if (response.status === 200) {
         alert("Course udpated Succesfully");
         window.location.reload()
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   };
   const [CourseData, setCourseData] = useState([])
@@ -77,13 +75,11 @@ function Home() {
   const getAllCourse = async () => {
     try {
       let response = await axios.get("http://localhost:8000/api/course/getdata");
-      console.log(response, "response");
       if (response.status === 200) {
-        console.log(response.data)
         setCourseData(response.data)
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   };
   const columns = [
@@ -118,7 +114,6 @@ function Home() {
     setEdit(true)
   }
 
-  console.log(Editdata,"Editdata")
 
   const handleDelete = async (id) => {
     try {
@@ -130,7 +125,7 @@ function Home() {
         window.location.reload()
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   }
   const [Add, setAdd] = useState(false)

@@ -20,10 +20,9 @@ const Carousel = () => {
       let response = await axios.get("http://localhost:8000/api/course/getdata")
       if(response.status===200){
         setCardsData(response.data);
-        console.log(response.data)
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 

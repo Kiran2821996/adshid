@@ -16,7 +16,6 @@ export default function Cart() {
     const [openpd, setOpenpd] = useState(false)
     const [openpg, setOpenpg] = useState(false)
 
-    const [razorpayInfo,setRazorpayInfo] = useState()
 
     const cancelButtonRef = useRef(null)
 
@@ -93,6 +92,44 @@ export default function Cart() {
         return errors;
     };
 
+
+    const [razorpayInfo,setRazorpayInfo] = useState()
+
+    useEffect(() => {
+        // This effect will run whenever razorpayInfo changes
+        if (razorpayInfo) {
+          const config = {
+            url: "/order/createorder",
+            baseURL: "http://localhost:8000/api",
+            method: "post",
+            header: { "Content-type": "application/json" },
+            data: {
+              razorpayInfo,
+              formData,
+              totalPrice: getTotal().totalPrice,
+              totalItems: getTotal().totalQuantity,
+              cartItems: cart.map(item => ({
+                id: item._id,
+                title: item.title,
+                price: item.price,
+                quantity: item.quantity,
+              })),
+            },
+          };
+      
+          axios(config)
+            .then(response => {
+              setOpen(false);
+              setOpenpd(false);
+              setOpenpg(true);
+            })
+            .catch(error => {
+              // Handle error
+              console.error('Error creating order:', error);
+            });
+        }
+      }, [razorpayInfo, formData, cart]); 
+
     const paymentHandler = async () => {
         const response = await fetch("http://localhost:8000/order", {
           method: "POST",
@@ -106,7 +143,6 @@ export default function Cart() {
           },
         });
         const order = await response.json();
-        console.log(order);
         var options = {
             key: "rzp_test_rY0f8xh1kHOO4A", // Enter the Key ID generated from the Dashboard
             amount:getTotal().totalPrice*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -132,7 +168,6 @@ export default function Cart() {
                 );
                 const jsonRes = await validateRes.json();
                 setRazorpayInfo(jsonRes);
-                console.log(jsonRes);
               },
             prefill: {
               //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
@@ -165,41 +200,13 @@ export default function Cart() {
         const errors = validateForm(formData);
         if (Object.keys(errors).length === 0) {
             try {
-                paymentHandler();
-                const config = {
-                    url: "/order/createorder",
-                    baseURL: "http://localhost:8000/api",
-                    method: "post",
-                    header: { "Content-type": "application/json" },
-                    data: {
-                        razorpayInfo,
-                        formData,
-                        totalPrice: getTotal().totalPrice,
-                        totalItems: getTotal().totalQuantity,
-                        cartItems: cart.map(item => ({
-                            id: item._id,
-                            title: item.title,
-                            price: item.price,
-                            quantity: item.quantity,
-                        })),
-                    },
-                };
-            
-                let response = await axios(config);
-                console.log(response, "response");
+                 paymentHandler();
                 
-    
-                // Handle success, e.g., show confirmation message or redirect to order page
-                console.log('Order created successfully');
             } catch (error) {
                 // Handle error
                 console.error('Error creating order:', error.message);
             }
 
-            setOpen(false);
-            setOpenpd(false);
-            setOpenpg(true);
-            console.log('Form submitted:', formData);
         } else {
             setFormErrors(errors);
         }

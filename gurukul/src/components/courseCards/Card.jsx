@@ -12,7 +12,6 @@ const Card = ({ price, currency, videoId, title, offerPrice, percentage, _id }) 
   const cart = useSelector((state) => state.cart)
 
   const isInCart = cart.some(item => item._id === _id);
-  console.log(cart,_id);
 
   return (
     <div className="-mt-2 p-2" id={_id}>

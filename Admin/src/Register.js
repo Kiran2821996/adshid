@@ -37,13 +37,13 @@ function Register() {
       };
 
       let response = await axios(config);
-      console.log(response, "response");
+
       if (response.status === 200) {
         alert("Registered   Succesfully");
         window.location.assign("/")
       }
     } catch (error) {
-      console.log("error", error);
+      console.error("error", error);
     }
   };
   const [showpassword, setshowpassword] = useState(false);

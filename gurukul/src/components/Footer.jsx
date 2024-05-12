@@ -87,7 +87,7 @@ function Footer() {
 
       let response = await axios(config);
 
-      console.log(response, "response");
+     
       if (response.status === 200) {
         // call emailjs
         setOpen(true);
@@ -99,7 +99,7 @@ function Footer() {
         });
 
       }}catch (error) {
-        console.log("error", error);
+        console.error("error", error);
       }
     }
   };

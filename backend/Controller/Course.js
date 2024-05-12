@@ -37,14 +37,38 @@ class Course {
   }
   async CourseUpdate(req, res) {
     try {
-        const  id  = req.params.id;
-        const { title, price, offerPrice, videoLink } = req.body;
-        const updatedCourse = 
-        await CourseModal.findByIdAndUpdate(id, { title, price, offerPrice, videoLink }, { new: true });
-        res.status(200).json({ message: 'Course updated successfully', course: updatedCourse });
+      const id = req.params.id;
+      const { title, price, offerPrice, videoLink } = req.body;
+      
+     
+      const findCourse = await CourseModal.findOne({ _id: id });
+      
+      if (!findCourse) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+  
+ 
+      const updatedCourse = await CourseModal.findOneAndUpdate(
+        { _id: id }, 
+        {
+          $set: {
+            title: title || findCourse.title,
+            offerPrice: offerPrice || findCourse.offerPrice,
+            price: price || findCourse.price,
+            videoLink: videoLink || findCourse.videoLink,
+          }
+        },
+        { new: true }
+      );
+  
+      res.status(200).json({
+        message: "Course updated successfully",
+        course: updatedCourse,
+      });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+      res.status(400).json({ error: err.message });
     }
+
   }
 }
 

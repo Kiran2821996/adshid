@@ -31,13 +31,11 @@ export default function ContactDetails() {
             let response = await axios.get(
                 "http://localhost:8000/api/contact/getdata"
             );
-            console.log(response, "response");
             if (response.status === 200) {
-                console.log(response.data);
                 setCDeatils(response.data);
             }
         } catch (error) {
-            console.log("error", error);
+            console.error("error", error);
         }
     };
 

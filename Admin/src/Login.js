@@ -41,7 +41,7 @@ function Login() {
                 window.location.assign("dashboard")
             }
         } catch (error) {
-            console.log("error", error);
+            console.error("error", error);
         }
     };
     return (
