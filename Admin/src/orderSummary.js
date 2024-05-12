@@ -1,8 +1,11 @@
 import DataTable from "react-data-table-component";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 export default function OrderSummary() {
     const [CDeatils, setCDeatils] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+
     const columns = [
         {
             name: "Order Id",
@@ -21,8 +24,8 @@ export default function OrderSummary() {
             selector: row => row.formData.confirmEmail,
         },
         {
-            name: "Cart Itmes",
-            selector: row => row.cartItems.map((items)=>items.title),
+            name: "Cart Items",
+            selector: row => row.cartItems.map((items) => items.title),
         },
         {
             name: "Total Items",
@@ -35,31 +38,82 @@ export default function OrderSummary() {
         {
             name: "Order Status",
             selector: row => row.orderStatus,
+            sortable: true, // Allow sorting on this column
+        },
+        {
+            name: "Action",
+            cell: row => (
+                <div>
+                    <button onClick={() => viewOrder(row)}>View</button>
+                    <button onClick={() => editOrderStatus(row)}>Edit</button>
+                </div>
+            ),
+            ignoreRowClick: true,
+            allowoverflow: true,
+            button: "true",
         }
     ];
 
     useEffect(() => {
-        getAllcontact();
+        getAllOrders();
     }, []);
-    const getAllcontact = async () => {
+
+    const getAllOrders = async () => {
         try {
-            let response = await axios.get(
-                "https://abhishad.onrender.com/api/order/getorders"
-            );
+            let response = await axios.get("https://abhishad.onrender.com/api/order/getorders");
             if (response.status === 200) {
                 setCDeatils(response.data);
             }
         } catch (error) {
-            console.error("error", error);
+            console.error("Error", error);
         }
     };
 
+    const viewOrder = (order) => {
+        // Implement logic to display order details in a dialog box
+        console.log("View Order:", order);
+    };
+
+    const editOrderStatus = async (order) => {
+        try {
+            const newStatus = order.orderStatus === "PENDING" ? "COMPLETED" : "PENDING";
+            const updatedOrder = { ...order, orderStatus: newStatus };
+            let response = await axios.put(`https://abhishad.onrender.com/api/order/updateorder/${order._id}`, updatedOrder);
+            if (response.status === 200) {
+                getAllOrders();
+            }
+        } catch (error) {
+            console.error("Error", error);
+        }
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const sortedData = CDeatils.sort((a, b) => {
+        if (a.orderStatus === "COMPLETED" && b.orderStatus === "PENDING") return 1;
+        if (a.orderStatus === "PENDING" && b.orderStatus === "COMPLETED") return -1;
+        return 0;
+    });
+
+    const filteredData = sortedData.filter((order) => {
+        const searchData = `${order._id} ${order.formData.name} ${order.formData.mobile} ${order.formData.confirmEmail} ${order.totalItems} ${order.totalPrice} ${order.orderStatus}`.toLowerCase();
+        return searchData.includes(searchQuery.toLowerCase());
+    });
+
     return (
         <>
+            <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+            />
             <DataTable
                 columns={columns}
-                data={CDeatils}
-                pagination={CDeatils.length > 9 ? true : false}
+                data={filteredData}
+                pagination={filteredData.length > 9 ? true : false}
             />
         </>
     );
