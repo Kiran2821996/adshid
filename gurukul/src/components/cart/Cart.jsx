@@ -3,8 +3,13 @@ import axios from 'axios';
 
 import emailjs from '@emailjs/browser';
 
+import PrivacyPolicy from '../dialogues/PrivacyPolicy';
+import TermsAndCondition from '../dialogues/TermsAndCondition';
+
 import { Dialog, Transition } from '@headlessui/react'
-import { ShoppingCartIcon, CreditCardIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
+import { ShoppingCartIcon, CreditCardIcon, DocumentTextIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
+
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 import { clearLocalStorage } from '../../redux/cartSlice';
 
@@ -17,6 +22,11 @@ export default function Cart() {
     const [openpd, setOpenpd] = useState(false)
     const [openpg, setOpenpg] = useState(false)
 
+    const [openpp, setOpenpp] = useState(false)
+    const [opentc, setOpentc] = useState(false)
+
+    const [isLoading, setIsLoading] = useState(false);
+    let [color, setColor] = useState("rgb(245 158 11)");
 
     const cancelButtonRef = useRef(null)
 
@@ -74,7 +84,7 @@ export default function Cart() {
 
         if (!data.mobile.trim()) {
             errors.mobile = 'Mobile number is required';
-        } else if (!/^\d{10}$/.test(data.mobile)) {
+        } else if (!/^(\+?\d{1,4})?\d{10}$/.test(data.mobile)) {
             errors.mobile = 'Invalid mobile number';
         }
 
@@ -121,45 +131,32 @@ export default function Cart() {
 
             axios(config)
                 .then(response => {
-                    console.log(response);
                     const order = response.data.order;
-                    console.log(response.data.order);
-                    // const templateParams = {
-                    //     email_to: `${order.formData.email}`,
-                    //     to_name: `${order.formData.name}`,
-                    //     from_name: 'Kiran',
-                    //     message: `
-                    //    <p>Thank you for your order, <strong>${order.formData.name}</strong>!</p>
-                    //             <p>Your order details are as follows:</p>
-                    //             <div class="order-details">
-                    //                 ${order.cartItems.map(item => `
-                    //                     <div class="item">
-                    //                         <p><strong>Item:</strong> ${item.title}</p>
-                    //                         <p><strong>Price:</strong> $${item.price}</p>
-                    //                         <p><strong>Quantity:</strong> ${item.quantity}</p>
-                    //                     </div>
-                    //                 `).join('')}
-                    //                 <p><strong>Total Price:</strong> $${order.totalPrice}</p>
-                    //             </div>
-                    //             <p>Your order has been created successfully. We will send a confirmation email to <strong>${order.formData.confirmEmail}</strong>.</p>
-                    //             <p>For any inquiries, please contact us at <strong>${order.formData.email}</strong> or <strong>${order.formData.mobile}</strong>.</p>
-                    //             <p>Order ID: <strong>${order.razorpayInfo.orderId}</strong></p>
-                    //             <p>Payment ID: <strong>${order.razorpayInfo.paymentId}</strong></p>
-                    // `,
-                    // };
+                    const templateParams = {
+                        mobile_from:"9597087830",
+                        email_from:"xxxxx@gmail.com",
+                        email_to: `${order.formData.email}`,
+                        to_name: `${order.formData.name}`,
+                        from_name: 'ABISHADGURU',
+                        order_id:`${order._id}`,
+                        cart_item: `${order.cartItems.map((item,index) => `${index+1}).Course Name:${item.title}--Quantity:${item.quantity}Nos--Price:₹${item.price}/-`).join(',')}`,
+                        total_price:`₹${order.totalPrice}`,
+                        razorpayInfo_paymentId:`${order.razorpayInfo.paymentId}`,
+                    };
 
-                    // emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
-                    //     publicKey: 'DT7q2FNyO0BX-rkLf',
-                    // })
-                    //     .then(() => {
-                    //         console.log('Order summary email sent successfully!');
-                    //     })
-                    //     .catch((error) => {
-                    //         console.error('Error sending email:', error);
-                    //     });
+                    emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
+                        publicKey: 'DT7q2FNyO0BX-rkLf',
+                    })
+                        .then(() => {
+                            console.log('Order summary email sent successfully!');
+                        })
+                        .catch((error) => {
+                            console.error('Error sending email:', error);
+                        });
                     setOpen(false);
                     setOpenpd(false);
                     setOpenpg(true);
+                    setIsLoading(false);
                 })
                 .catch(error => {
                     // Handle error
@@ -169,68 +166,87 @@ export default function Cart() {
     }, [razorpayInfo, formData, cart]);
 
     const paymentHandler = async () => {
-        const response = await fetch("https://abhishad.onrender.com/order", {
-            method: "POST",
-            body: JSON.stringify({
-                amount: getTotal().totalPrice * 100,
+        setOpenpd(false);
+        setIsLoading(true);
+        try {
+            const response = await fetch("https://abhishad.onrender.com/order", {
+                method: "POST",
+                body: JSON.stringify({
+                    amount: getTotal().totalPrice * 100,
+                    currency: "INR",
+                    receipt: "ABHISHADGURU_" + new Date().toLocaleDateString('en-GB').split('/').reverse().join(''),
+                }),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const order = await response.json();
+            var options = {
+                key: "rzp_test_rY0f8xh1kHOO4A", // Enter the Key ID generated from the Dashboard
+                amount: getTotal().totalPrice * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
                 currency: "INR",
-                receipt: "JEWIOEEJE",
-            }),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        const order = await response.json();
-        var options = {
-            key: "rzp_test_rY0f8xh1kHOO4A", // Enter the Key ID generated from the Dashboard
-            amount: getTotal().totalPrice * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            currency: "INR",
-            name: "Acme Corp", //your business name
-            description: "Test Transaction",
-            image: "https://example.com/your_logo",
-            order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            handler: async function (response) {
-                const body = {
-                    ...response,
-                };
+                name: "ABHISHADGURU", //your business name
+                description: "Test Transaction",
+                image: "https://example.com/your_logo",
+                order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                handler: async function (response) {
+                    const body = {
+                        ...response,
+                    };
 
-                const validateRes = await fetch(
-                    "https://abhishad.onrender.com/order/validate",
-                    {
-                        method: "POST",
-                        body: JSON.stringify(body),
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                    }
-                );
-                const jsonRes = await validateRes.json();
-                setRazorpayInfo(jsonRes);
-            },
-            prefill: {
-                //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
-                name: formData.name, //your customer's name
-                email: formData.email,
-                contact: formData.mobile, //Provide the customer's phone number for better conversion rates
-            },
-            notes: {
-                address: "Razorpay Corporate Office",
-            },
-            theme: {
-                color: "#3399cc",
-            },
-        };
-        var rzp1 = new window.Razorpay(options);
-        rzp1.on("payment.failed", function (response) {
-            alert(response.error.code);
-            alert(response.error.description);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id);
-        });
-        rzp1.open();
+                    const validateRes = await fetch(
+                        "https://abhishad.onrender.com/order/validate",
+                        {
+                            method: "POST",
+                            body: JSON.stringify(body),
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                        }
+                    );
+                    const jsonRes = await validateRes.json();
+                    setRazorpayInfo(jsonRes);
+                },
+                prefill: {
+                    //We recommend using the prefill parameter to auto-fill customer's contact information, especially their phone number
+                    name: formData.name, //your customer's name
+                    email: formData.email,
+                    contact: formData.mobile, //Provide the customer's phone number for better conversion rates
+                },
+                notes: {
+                    address: "Razorpay Corporate Office",
+                },
+                theme: {
+                    color: "#F59E0B",
+                },
+                modal: {
+                    ondismiss: handleRazorpayClose 
+                }
+               
+            };
+            var rzp1 = new window.Razorpay(options);
+            rzp1.on("payment.failed", function (response) {
+                setIsLoading(false);
+                setOpenpd(true);
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
+            });
+            rzp1.on("payment.success", function (response) {
+                setIsLoading(false);
+                setOpenpd(false);
+            });
+            rzp1.open();
+        } catch (error) {
+            console.error('Error creating order:', error.message);
+            setIsLoading(false);
+            setOpenpd(true);
+        }
+
     }
 
     const handleSubmit = async (e) => {
@@ -250,6 +266,9 @@ export default function Cart() {
         }
     };
 
+    const handleRazorpayClose = () => {
+        setIsLoading(false); 
+    };
 
 
     window.onbeforeunload = function () {
@@ -270,6 +289,14 @@ export default function Cart() {
                 <ShoppingCartIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 hover:text-white" />
                 <p className='absolute text-amber-500 font-black text-sm right-0 -top-2 lg:text-lg lg:-top-3 rounded-full lg:-right-1'>{getTotalQuantity() || 0}</p>
             </div>
+            {isLoading && <div className="loader text-white loader-cut">
+                    <ClimbingBoxLoader
+                    color={color}
+                        size={20}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                    />
+                </div>}
             {/* Shopping cart dialogue */}
             <Transition.Root show={open} as={Fragment}>
                 <Dialog className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpen}>
@@ -304,7 +331,7 @@ export default function Cart() {
                                                     ORDER SUMMARY <div
                                                         className="relative  cursor-pointer"
                                                     >
-                                                        <ShoppingCartIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 hover:text-white" />
+                                                        <ShoppingCartIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500" />
                                                         <p className='absolute text-amber-500 font-black text-sm right-0 -top-2 lg:text-lg lg:-top-3 rounded-full lg:-right-1'>{getTotalQuantity() || 0}</p>
                                                     </div>
                                                 </Dialog.Title>
@@ -406,18 +433,13 @@ export default function Cart() {
                                         <div className="sm:flex sm:items-start">
                                             <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                                 <Dialog.Title as="h3" className=" flex items-center text-base lg:text-2xl font-semibold leading-6 text-gray-900">
-                                                    PAYMENT <CreditCardIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
+                                                    FOR PAYMENT <CreditCardIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
                                                 </Dialog.Title>
-                                                <div className="mt-2">
-                                                    <p className="text-md lg:text-xl text-gray-500">
-                                                        Payment link will be only shared via respective mail id in order to verify and the link will be shared for the same mail once payment done successfully.
-                                                    </p>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <form onSubmit={handleSubmit}>
-                                        <div className="mt-2 px-4 lg:px-6 gap-x-4">
+                                        <div className=" px-4 lg:px-6 gap-x-4">
                                             <div className='mt-3'>
                                                 <label htmlFor="name" className="sr-only">
                                                     Name
@@ -434,7 +456,7 @@ export default function Cart() {
                                                     placeholder="Enter your name"
                                                 />
                                                 {formErrors.name && (
-                                                    <p className="text-red-500">{formErrors.name}</p>
+                                                    <p className="text-red-500 text-sm">{formErrors.name}</p>
                                                 )}
                                             </div>
                                             <div className='mt-3'>
@@ -454,7 +476,7 @@ export default function Cart() {
                                                     placeholder="Enter your mobile number"
                                                 />
                                                 {formErrors.mobile && (
-                                                    <p className="text-red-500">{formErrors.mobile}</p>
+                                                    <p className="text-red-500 text-sm">{formErrors.mobile}</p>
                                                 )}
                                             </div>
                                             <div className='mt-3'>
@@ -473,7 +495,7 @@ export default function Cart() {
                                                     placeholder="Enter your email"
                                                 />
                                                 {formErrors.email && (
-                                                    <p className="text-red-500">{formErrors.email}</p>
+                                                    <p className="text-red-500 text-sm">{formErrors.email}</p>
                                                 )}
                                             </div>
                                             <div className='mt-3'>
@@ -492,16 +514,21 @@ export default function Cart() {
                                                     placeholder="Confirm your email"
                                                 />
                                                 {formErrors.confirmEmail && (
-                                                    <p className="text-red-500">{formErrors.confirmEmail}</p>
+                                                    <p className="text-red-500 text-sm">{formErrors.confirmEmail}</p>
                                                 )}
                                             </div>
+                                        </div>
+                                        <div className="mt-2 px-4">
+                                            <p className="text-sm ms-3 leading-3 text-gray-500">
+                                                By providing your details, you agree to our <button onClick={() => { setOpenpp(true); setOpenpd(false) }} className='text-black p-1 hover:hover:text-amber-500'>Terms and Condition</button> and <button onClick={() => { setOpenpp(true); setOpenpd(false) }} className='text-black p-1 hover:hover:text-amber-500'>Privacy Policy</button>.
+                                            </p>
                                         </div>
                                         <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                                             <button
                                                 type="submit"
                                                 className="inline-flex w-full justify-center rounded-md bg-black px-3 py-2 text-md font-semibold text-amber-500 shadow-sm hover:bg-amber-500 hover:text-white sm:ml-3 sm:w-auto"
                                             >
-                                                SHARE PAYMENT LINK VIA MAIL
+                                                PAY VIA RAZORPAY
                                             </button>
                                             <button
                                                 type="button"
@@ -550,14 +577,13 @@ export default function Cart() {
                                         <div className="sm:flex sm:items-start">
                                             <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
                                                 <Dialog.Title as="h3" className=" flex items-center text-base lg:text-2xl font-semibold leading-6 text-gray-900">
-                                                    GUIDELINE <DocumentTextIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
+                                                    PAYMENT SUCCESS <CheckCircleIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500" />
                                                 </Dialog.Title>
                                                 <div className="mt-2">
                                                     <p className="text-md lg:text-xl text-gray-500">
-                                                        We've sent the payment link to the email you provided. Upon completion of payment, the video links for your selected courses will be swiftly shared with the same email. In case you don't find it in your inbox, kindly check your spam mail. For any inquiries, reach out to us at <span className='text-black'>xxxx@gmail.com. </span>
+                                                        The order summary has been sent to the email address you provided. In case you don't find it in your inbox, kindly check your spam mail. For any inquiries, reach out to us at <span className='text-black'>xxxx@gmail.com. </span>
                                                     </p>
                                                     <p className="text-md lg:text-xl text-gray-500 mt-3">We appreciate your patronage! Enjoy learning!</p>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -577,6 +603,8 @@ export default function Cart() {
                     </div>
                 </Dialog>
             </Transition.Root>
+            <PrivacyPolicy isOpen={openpp} onClose={setOpenpp} onNext={setOpenpd} />
+            <TermsAndCondition isOpen={opentc} onClose={setOpentc} onNext={setOpenpd} />
         </>
 
     )

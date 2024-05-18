@@ -4,6 +4,9 @@ import Author_bg from "../assets/about_us_images/ASH_7389.jpg"
 import Author_ag from "../assets/about_us_images/IMG_7536.jpg"
 import Author_jh from "../assets/about_us_images/IMG_7538.jpg"
 import Author_ch from "../assets/about_us_images/ASH_7389.png"
+import Author_23 from "../assets/about_us_images/SDF12.jpg"
+import Author_24 from "../assets/about_us_images/SDF23.jpg"
+import Author_25 from "../assets/about_us_images/SDF56.jpg"
 
 function AboutUs() {
   return (
@@ -36,23 +39,23 @@ function AboutUs() {
               <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                 <div className="h-64 w-44 overflow-hidden rounded-lg sm:opacity-0 lg:opacity-100">
                   <img
+                    src={Author_24}
+                    alt=""
+                    className="h-full w-full object-cover object-center"
+                  />
+                </div>
+              </div>
+              <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
+                <div className="h-64 w-44 overflow-hidden rounded-lg">
+                  <img
                     src={Author_bg}
                     alt=""
                     className="h-full w-full object-cover object-center"
                   />
                 </div>
-              </div>
-              <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                 <div className="h-64 w-44 overflow-hidden rounded-lg">
                   <img
-                    src={Author_ag}
-                    alt=""
-                    className="h-full w-full object-cover object-center"
-                  />
-                </div>
-                <div className="h-64 w-44 overflow-hidden rounded-lg">
-                  <img
-                    src={Author}
+                    src={Author_25}
                     alt=""
                     className="h-full w-full object-cover object-center"
                   />
@@ -61,7 +64,7 @@ function AboutUs() {
               <div className="grid flex-shrink-0 grid-cols-1 gap-y-6 lg:gap-y-8">
                 <div className="h-64 w-44 overflow-hidden rounded-lg">
                   <img
-                    src={Author_jh}
+                    src={Author_23}
                     className="h-full w-full object-cover object-center"
                   />
                 </div>

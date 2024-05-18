@@ -4,6 +4,19 @@
   background-color: #1c1c1c;
 }
 
+.loader-cut{
+    position: absolute;
+    top: 0%;
+    left: -9%;
+    height: 100vh;
+    background: #000000ad;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
 @media only screen and (max-width:639px) {
   .right-cust{
     right: 13%;

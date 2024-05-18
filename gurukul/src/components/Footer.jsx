@@ -3,10 +3,13 @@ import { Dialog, Transition } from '@headlessui/react'
 import { HeartIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
 import axios from 'axios'
 
+import PrivacyPolicy from './dialogues/PrivacyPolicy'
+
 import Youtube from "../assets/footer_images/video.png"
 import Facebook from "../assets/footer_images/facebook.png"
 import Twitter from "../assets/footer_images/twitter.png"
 import Instagram from "../assets/footer_images/social-media.png"
+import TermsAndCondition from './dialogues/TermsAndCondition'
 
 function Footer() {
   const [open, setOpen] = useState(false)
@@ -298,7 +301,7 @@ function Footer() {
           </div>
         </div>
       </div>
-      <div className='mx-auto bg-grey-cust flex justify-between items-center px-4 py-3  sm:static sm:px-6 lg:px-8 lg:py-6'>
+      <div id='TC&PP' className='mx-auto bg-grey-cust flex justify-between items-center px-4 py-3  sm:static sm:px-6 lg:px-8 lg:py-6'>
         <p className='text-white p-1 w-3/5 lg:w-2/5'>©️ 2024 ABHISHADGURU All Rights Reserved.</p>
         <div className='mx-auto w-3/5 lg:w-3/5 flex flex-col lg:flex-row justify-end items-end lg:items-center px-0 sm:static'>
           <button onClick={() => setOpenpp(true)} className='text-white p-1 lg:me-4 hover:hover:text-amber-500'>PRIVACY POLICY</button>
@@ -362,123 +365,9 @@ function Footer() {
         </Dialog>
       </Transition.Root>
       {/* Privacy policy dialogue*/}
-      <Transition.Root show={openpp} as={Fragment}>
-        <Dialog className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpenpp}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-75 transition-opacity" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative transform h-1/4 lg:h-100 overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <Dialog.Title as="h3" className="flex items-center text-base lg:text-2xl font-semibold leading-6 text-gray-900">
-                          PRIVACY AND POLICY <DocumentTextIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
-                        </Dialog.Title>
-                        <div className="mt-2 overflow-scroll h-60">
-                          <p className="text-md lg:text-xl text-gray-500">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quia illum dolorem! Debitis explicabo odit aliquam error in aliquid quos cum. Ipsa voluptates sapiente rem velit voluptatibus error autem nesciunt magni, unde iusto qui, molestiae et recusandae ab quam nihil quas nostrum asperiores earum saepe ad. Dicta doloribus ipsa sit dignissimos ullam odio commodi iure consequuntur dolorum aspernatur exercitationem neque enim facilis quam assumenda, eveniet atque asperiores magnam fuga sapiente a voluptates voluptatem officiis quae. Praesentium placeat cumque consectetur asperiores officia quos totam autem dicta fugit nam? Autem nulla aliquam esse totam voluptatum. Doloribus voluptas consectetur nulla dolor illum asperiores!
-                          </p>
-                          <p className="text-md lg:text-xl text-gray-500">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quia illum dolorem! Debitis explicabo odit aliquam error in aliquid quos cum. Ipsa voluptates sapiente rem velit voluptatibus error autem nesciunt magni, unde iusto qui, molestiae et recusandae ab quam nihil quas nostrum asperiores earum saepe ad. Dicta doloribus ipsa sit dignissimos ullam odio commodi iure consequuntur dolorum aspernatur exercitationem neque enim facilis quam assumenda, eveniet atque asperiores magnam fuga sapiente a voluptates voluptatem officiis quae. Praesentium placeat cumque consectetur asperiores officia quos totam autem dicta fugit nam? Autem nulla aliquam esse totam voluptatum. Doloribus voluptas consectetur nulla dolor illum asperiores!
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 -m-t-2">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-black px-3 py-2 text-md font-semibold text-amber-500 shadow-sm hover:bg-amber-500 hover:text-white sm:ml-3 sm:w-auto"
-                      onClick={() => setOpenpp(false)}
-                    >
-                      Ok
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
+      <PrivacyPolicy isOpen={openpp}  onClose={setOpenpp}/>
       {/* Terms and condition dialogue*/}
-      <Transition.Root show={opentc} as={Fragment}>
-        <Dialog className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpentc}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-75 transition-opacity" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-              >
-                <Dialog.Panel className="relative transform h-1/4 lg:h-100 overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                  <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <Dialog.Title as="h3" className="flex items-center text-base lg:text-2xl font-semibold leading-6 text-gray-900">
-                          TERMS AND CONDITION <DocumentTextIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
-                        </Dialog.Title>
-                        <div className="mt-2 overflow-scroll h-60">
-                          <p className="text-md lg:text-xl text-gray-500">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quia illum dolorem! Debitis explicabo odit aliquam error in aliquid quos cum. Ipsa voluptates sapiente rem velit voluptatibus error autem nesciunt magni, unde iusto qui, molestiae et recusandae ab quam nihil quas nostrum asperiores earum saepe ad. Dicta doloribus ipsa sit dignissimos ullam odio commodi iure consequuntur dolorum aspernatur exercitationem neque enim facilis quam assumenda, eveniet atque asperiores magnam fuga sapiente a voluptates voluptatem officiis quae. Praesentium placeat cumque consectetur asperiores officia quos totam autem dicta fugit nam? Autem nulla aliquam esse totam voluptatum. Doloribus voluptas consectetur nulla dolor illum asperiores!
-                          </p>
-                          <p className="text-md lg:text-xl text-gray-500">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas quia illum dolorem! Debitis explicabo odit aliquam error in aliquid quos cum. Ipsa voluptates sapiente rem velit voluptatibus error autem nesciunt magni, unde iusto qui, molestiae et recusandae ab quam nihil quas nostrum asperiores earum saepe ad. Dicta doloribus ipsa sit dignissimos ullam odio commodi iure consequuntur dolorum aspernatur exercitationem neque enim facilis quam assumenda, eveniet atque asperiores magnam fuga sapiente a voluptates voluptatem officiis quae. Praesentium placeat cumque consectetur asperiores officia quos totam autem dicta fugit nam? Autem nulla aliquam esse totam voluptatum. Doloribus voluptas consectetur nulla dolor illum asperiores!
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button
-                      type="button"
-                      className="inline-flex w-full justify-center rounded-md bg-black px-3 py-2 text-md font-semibold text-amber-500 shadow-sm hover:bg-amber-500 hover:text-white sm:ml-3 sm:w-auto"
-                      onClick={() => setOpentc(false)}
-                    >
-                      Ok
-                    </button>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition.Root>
+      <TermsAndCondition isOpen={opentc}  onClose={setOpentc}/>
     </div>
   )
 }
