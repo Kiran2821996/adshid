@@ -5,11 +5,11 @@ function Header() {
   return (
     <Navbar className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand href="#home">Navbar with text</Navbar.Brand>
+        <Navbar.Brand href="#home">Abhishad Gurukul DASHBOARD</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>
-            Signed in as: <a href="#login">Mark Otto</a>
+            <a href="/">Log Out</a>
           </Navbar.Text>
         </Navbar.Collapse>
       </Container>

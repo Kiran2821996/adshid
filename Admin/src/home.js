@@ -82,6 +82,28 @@ function Home() {
       console.error("error", error);
     }
   };
+
+  const customStyles = {
+    rows: {
+      style: {
+        fontSize: '16px',
+        fontWeight: 'normal' // Change the font size for the rows
+      },
+    },
+    headCells: {
+      style: {
+        fontSize: '18px', // Change the font size for the header cells
+        fontWeight: 'bold'
+      },
+    },
+    cells: {
+      style: {
+        fontSize: '16px',
+        fontWeight: 'normal' // Change the font size for the cells
+      },
+    },
+  };
+
   const columns = [
     {
       name: 'Title',
@@ -100,8 +122,8 @@ function Home() {
       selector: row =>
         <>
           <div className="row">
-            <button onClick={() => handleEdit(row)}>Edit</button >
-            <button onClick={() => handleDelete(row._id)}>Delete</button >
+            <button className="p-4 my-2 bg-success text-light" onClick={() => handleEdit(row)}>Edit</button >
+            <button className="p-4 my-2 bg-danger text-light" onClick={() => handleDelete(row._id)}>Delete</button >
           </div>
         </>,
     },
@@ -138,6 +160,7 @@ function Home() {
             columns={columns}
             data={CourseData}
             pagination={CourseData.length > 9 ? true : false}
+            customStyles={customStyles}
           /> </>
       ) : (
         <div className="row m-auto">

@@ -1,10 +1,13 @@
 import DataTable from "react-data-table-component";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import OrderDetailsModal from "./OrderDetailSummary";
 
 export default function OrderSummary() {
     const [CDeatils, setCDeatils] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [viewOrderSummary,setViewOrderSummary] = useState([]);
+    const [show, setShow] = useState(false);
 
     const columns = [
         {
@@ -44,7 +47,7 @@ export default function OrderSummary() {
             name: "Action",
             cell: row => (
                 <div>
-                    <button onClick={() => viewOrder(row)}>View</button>
+                    <button className="me-3" onClick={() => viewOrder(row)}>View</button>
                     <button onClick={() => editOrderStatus(row)}>Edit</button>
                 </div>
             ),
@@ -69,10 +72,20 @@ export default function OrderSummary() {
         }
     };
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => {
+        console.log("kkf");
+        setShow(true);
+    };
+
     const viewOrder = (order) => {
         // Implement logic to display order details in a dialog box
+        setViewOrderSummary(order);
+        handleShow();
         console.log("View Order:", order);
     };
+
+   
 
     const editOrderStatus = async (order) => {
         try {
@@ -115,6 +128,7 @@ export default function OrderSummary() {
                 data={filteredData}
                 pagination={filteredData.length > 9 ? true : false}
             />
+            <OrderDetailsModal show={show} handleClose={handleClose} orderData={viewOrderSummary} />
         </>
     );
 }

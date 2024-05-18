@@ -14,7 +14,7 @@ export default function App() {
     <Routes>
       <Route path='/dashboard' element={<Layout>
         <Header />
-        <Home />
+        <Home/>
       </Layout>} />
       <Route path='/contactDetails'
         element={<Layout>
