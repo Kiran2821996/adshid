@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
 
-const Card = ({ price, currency, videoId, title, offerPrice, percentage, _id }) => {
+const Card = ({ price,videoLink, title, offerPrice, _id, yTLink }) => {
   const [open, setOpen] = useState(false)
 
   const cancelButtonRef = useRef(null)
@@ -18,13 +18,13 @@ const Card = ({ price, currency, videoId, title, offerPrice, percentage, _id }) 
       <div className="rounded-2xl bg-amber-500 pt-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pt-16">
         <div className="px-8">
           <div>
-            <iframe width="100%" height="300px" src={`https://www.youtube.com/embed/${videoId}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
+            <iframe width="100%" height="300px" src={`https://www.youtube.com/embed/${videoLink}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
           <p className=" text-2xl lg:text-4xl mt-3 font-semibold text-black">{title}</p>
           <p className="mt-6 flex items-baseline justify-center gap-x-2">
-            <span className="text-3xl lg:text-5xl font-bold tracking-tight text-white line-through decoration-black">₹{offerPrice}</span>
-            <span className="text-3xl lg:text-5xl font-bold tracking-tight text-gray-900">₹{price}</span>
-            <span className="text-sm lg:text-md font-semibold leading-6 tracking-wide text-gray-900">{percentage}% OFF</span>
+            <span className="text-3xl lg:text-5xl font-bold tracking-tight text-white line-through decoration-black">₹{price}</span>
+            <span className="text-3xl lg:text-5xl font-bold tracking-tight text-gray-900">₹{offerPrice}</span>
+            <span className="text-sm lg:text-md font-semibold leading-6 tracking-wide text-gray-900">{ Math.round(((price - offerPrice) / price) * 100)}% OFF</span>
           </p>
 
           <div className="my-6 flex pb-3 lg:pb-0 items-center justify-center gap-x-6 lg:justify-between">

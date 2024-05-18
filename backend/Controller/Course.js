@@ -8,8 +8,8 @@ const CourseModal = require('../Modal/Programs');
 class Course {
   async AddCourse(req, res) {
     try {
-        const { title, price, offerPrice, videoLink } = req.body;
-        const course = new CourseModal({ title, price, offerPrice, videoLink });
+        const { title, price, offerPrice, videoLink, yTLink } = req.body;
+        const course = new CourseModal({ title, price, offerPrice, videoLink ,yTLink});
         let savedCourse = await course.save();
         if (savedCourse) {
             return res.status(200).json({ message: 'Course added successfully', course: savedCourse });
@@ -38,7 +38,7 @@ class Course {
   async CourseUpdate(req, res) {
     try {
       const id = req.params.id;
-      const { title, price, offerPrice, videoLink } = req.body;
+      const { title, price, offerPrice, videoLink ,yTLink} = req.body;
       
      
       const findCourse = await CourseModal.findOne({ _id: id });
@@ -56,6 +56,7 @@ class Course {
             offerPrice: offerPrice || findCourse.offerPrice,
             price: price || findCourse.price,
             videoLink: videoLink || findCourse.videoLink,
+            yTLink: yTLink || findCourse.yTLink,
           }
         },
         { new: true }

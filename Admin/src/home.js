@@ -11,6 +11,7 @@ function Home() {
     price: "",
     offerPrice: "",
     videoLink: "",
+    yTLink:"",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -35,6 +36,7 @@ function Home() {
           price: formData.price,
           offerPrice: formData.offerPrice,
           videoLink: formData.videoLink,
+          yTLink: formData.yTLink,
         },
       };
 
@@ -58,6 +60,7 @@ function Home() {
           price: formData.price,
           offerPrice: formData.offerPrice,
           videoLink: formData.videoLink,
+          yTLink: formData.yTLink,
         },
       };
 
@@ -234,6 +237,23 @@ function Home() {
                 />
                 {formErrors.videoLink && (
                   <p className="error-message">{formErrors.videoLink}</p>
+                )}
+              </div>
+
+              <div className="form-input">
+                <label htmlFor="yTLink">YT Link</label>
+                <input
+                  id="yTLink"
+                  name="yTLink"
+                  type="url"
+                  autoComplete="off"
+                  required
+                 
+                  defaultValue={Edit ? Editdata.yTLink : formData.yTLink}
+                  onChange={handleInputChange}
+                />
+                {formErrors.yTLink && (
+                  <p className="error-message">{formErrors.yTLink}</p>
                 )}
               </div>
 

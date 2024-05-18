@@ -129,39 +129,39 @@ export default function Cart() {
                 },
             };
 
-            axios(config)
-                .then(response => {
-                    const order = response.data.order;
-                    const templateParams = {
-                        mobile_from:"9597087830",
-                        email_from:"xxxxx@gmail.com",
-                        email_to: `${order.formData.email}`,
-                        to_name: `${order.formData.name}`,
-                        from_name: 'ABISHADGURU',
-                        order_id:`${order._id}`,
-                        cart_item: `${order.cartItems.map((item,index) => `${index+1}).Course Name:${item.title}--Quantity:${item.quantity}Nos--Price:₹${item.price}/-`).join(',')}`,
-                        total_price:`₹${order.totalPrice}`,
-                        razorpayInfo_paymentId:`${order.razorpayInfo.paymentId}`,
-                    };
+            // axios(config)
+            //     .then(response => {
+            //         const order = response.data.order;
+            //         const templateParams = {
+            //             mobile_from:"9597087830",
+            //             email_from:"xxxxx@gmail.com",
+            //             email_to: `${order.formData.email}`,
+            //             to_name: `${order.formData.name}`,
+            //             from_name: 'ABISHADGURU',
+            //             order_id:`${order._id}`,
+            //             cart_item: `${order.cartItems.map((item,index) => `${index+1}).Course Name:${item.title}--Quantity:${item.quantity}Nos--Price:₹${item.price}/-`).join(',')}`,
+            //             total_price:`₹${order.totalPrice}`,
+            //             razorpayInfo_paymentId:`${order.razorpayInfo.paymentId}`,
+            //         };
 
-                    emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
-                        publicKey: 'DT7q2FNyO0BX-rkLf',
-                    })
-                        .then(() => {
-                            console.log('Order summary email sent successfully!');
-                        })
-                        .catch((error) => {
-                            console.error('Error sending email:', error);
-                        });
-                    setOpen(false);
-                    setOpenpd(false);
-                    setOpenpg(true);
-                    setIsLoading(false);
-                })
-                .catch(error => {
-                    // Handle error
-                    console.error('Error creating order:', error);
-                });
+            //         emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
+            //             publicKey: 'DT7q2FNyO0BX-rkLf',
+            //         })
+            //             .then(() => {
+            //                 console.log('Order summary email sent successfully!');
+            //             })
+            //             .catch((error) => {
+            //                 console.error('Error sending email:', error);
+            //             });
+            //         setOpen(false);
+            //         setOpenpd(false);
+            //         setOpenpg(true);
+            //         setIsLoading(false);
+            //     })
+            //     .catch(error => {
+            //         // Handle error
+            //         console.error('Error creating order:', error);
+            //     });
         }
     }, [razorpayInfo, formData, cart]);
 
