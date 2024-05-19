@@ -1,5 +1,6 @@
 import React, { useState, useRef, Fragment, useEffect, useCallback } from 'react'
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 import emailjs from '@emailjs/browser';
 
@@ -283,12 +284,15 @@ export default function Cart() {
 
     return (
         <>
-            <div onClick={() => setOpen(true)}
+            <motion.div 
+            whileHover={{ scale: 0.9 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setOpen(true)}
                 className="relative right-cust cursor-pointer"
             >
                 <ShoppingCartIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 hover:text-white" />
                 <p className='absolute text-amber-500 font-black text-sm right-0 -top-2 lg:text-lg lg:-top-3 rounded-full lg:-right-1'>{getTotalQuantity() || 0}</p>
-            </div>
+            </motion.div>
             {isLoading && <div className="loader text-white loader-cut">
                     <ClimbingBoxLoader
                     color={color}

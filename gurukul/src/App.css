@@ -15,11 +15,47 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    z-index: 1000000000;
 }
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+}
+
+.slide-down {
+  animation: slideDown 0.3s forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.3s forwards;
+}
+
 
 @media only screen and (max-width:639px) {
   .right-cust{
     right: 13%;
+  }
+
+  .loader-cut{
+    left: -6%;
   }
 }
 /* <<<<<<<<<<<<<<<<<   HEADER NAVBAR -- END   >>>>>>>>>>>>>>>>>>>>>>> */
@@ -40,6 +76,11 @@
 .slick-prev {
   left: -30px !important;
   z-index: 1 !important;
+}
+
+.slick-prev:hover,.slick-next:hover{
+  transform: scale(0.9) !important;
+  transition: transform 0.3s ease;
 }
 
 .slick-dots li button{

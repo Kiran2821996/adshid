@@ -2,9 +2,13 @@ import React, { Fragment, useRef, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../../redux/cartSlice';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 
-const Card = ({ price,videoLink, title, offerPrice, _id, yTLink }) => {
+import { motion } from 'framer-motion';
+
+const Card = ({ price, videoLink, title, offerPrice, _id, yTLink }) => {
   const [open, setOpen] = useState(false)
+  const [youtube, setYoutube] = useState('')
 
   const cancelButtonRef = useRef(null)
   const dispatch = useDispatch()
@@ -13,38 +17,47 @@ const Card = ({ price,videoLink, title, offerPrice, _id, yTLink }) => {
 
   const isInCart = cart.some(item => item._id === _id);
 
+  const handleOkClick = () => {
+    window.open(youtube, '_blank');
+    setOpen(false);
+  };
+
   return (
     <div className="-mt-2 p-2" id={_id}>
       <div className="rounded-2xl bg-amber-500 pt-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex lg:flex-col lg:justify-center lg:pt-16">
-        <div className="px-8">
+        <div className="px-3 lg:px-8">
           <div>
             <iframe width="100%" height="300px" src={`https://www.youtube.com/embed/${videoLink}`} title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
           </div>
           <p className=" text-2xl lg:text-4xl mt-3 font-semibold text-black">{title}</p>
-          <p className="mt-6 flex items-baseline justify-center gap-x-2">
+          <p className="mt-2 lg:mt-6 flex items-baseline justify-center gap-x-2">
             <span className="text-3xl lg:text-5xl font-bold tracking-tight text-white line-through decoration-black">₹{price}</span>
             <span className="text-3xl lg:text-5xl font-bold tracking-tight text-gray-900">₹{offerPrice}</span>
-            <span className="text-sm lg:text-md font-semibold leading-6 tracking-wide text-gray-900">{ Math.round(((price - offerPrice) / price) * 100)}% OFF</span>
+            <span className="text-sm lg:text-md font-semibold leading-6 tracking-wide text-gray-900">{Math.round(((price - offerPrice) / price) * 100)}% OFF</span>
           </p>
 
-          <div className="my-6 flex pb-3 lg:pb-0 items-center justify-center gap-x-6 lg:justify-between">
-            <button onClick={() => setOpen(true)}
+          <div className="my-3 lg:my-6 flex pb-3 lg:pb-0 items-center justify-center gap-x-6  flex-col-reverse lg:flex-row lg:justify-between">
+            <motion.button
+              whileHover={{ scale: 0.9 }}
+              whileTap={{ scale: 0.9 }}
+              onClick={() => { setOpen(true); setYoutube(yTLink) }}
               className="w-56 border-2 text-center rounded-md bg-transparent px-1 py-2 lg:px-3.5 lg:py-2.5 text-md lg:text-lg font-semibold text-gray-900 shadow-sm border-black hover:text-white hover:border-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               READ MORE
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 0.9 }}
+              whileTap={{ scale: 0.9 }}
               onClick={() =>
                 dispatch(addToCart({
                   _id, title, price
                 }))
               }
-              className={`w-56 border-2 border-transparent text-center rounded-md px-1 py-2 lg:px-3.5 lg:py-2.5  text-md lg:text-lg  font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-                isInCart ? 'bg-white text-gray-900' : 'bg-black text-amber-500 hover:bg-gray-900 hover:text-white'
-              }`}
+              className={`mb-2 lg:mb-0 w-56 border-2 border-transparent text-center rounded-md px-1 py-2 lg:px-3.5 lg:py-2.5  text-md lg:text-lg  font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${isInCart ? 'bg-white text-gray-900' : 'bg-black text-amber-500 hover:bg-gray-900 hover:text-white'
+                }`}
             >
               {isInCart ? 'REMOVE FROM CART' : 'ADD TO CART'}
-            </button>
+            </motion.button>
           </div>
         </div>
       </div>
@@ -78,8 +91,8 @@ const Card = ({ price,videoLink, title, offerPrice, _id, yTLink }) => {
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                        <Dialog.Title as="h3" className="text-base lg:text-2xl font-semibold leading-6 text-gray-900">
-                          GUIDELINE
+                        <Dialog.Title as="h3" className="flex items-center text-base lg:text-2xl font-semibold leading-6 text-gray-900">
+                          GUIDELINE  <DocumentTextIcon className="w-6 h-5 md:w-12 md:h-11 lg:w-12 lg:h-11 text-amber-500 " />
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-md lg:text-xl text-gray-500">
@@ -93,7 +106,7 @@ const Card = ({ price,videoLink, title, offerPrice, _id, yTLink }) => {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-black px-3 py-2 text-md font-semibold text-amber-500 shadow-sm hover:bg-amber-500 hover:text-white sm:ml-3 sm:w-auto"
-                      onClick={() => setOpen(false)}
+                      onClick={handleOkClick}
                     >
                       Ok
                     </button>
