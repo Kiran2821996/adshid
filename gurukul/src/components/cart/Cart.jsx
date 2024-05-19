@@ -130,39 +130,39 @@ export default function Cart() {
                 },
             };
 
-            // axios(config)
-            //     .then(response => {
-            //         const order = response.data.order;
-            //         const templateParams = {
-            //             mobile_from:"9597087830",
-            //             email_from:"xxxxx@gmail.com",
-            //             email_to: `${order.formData.email}`,
-            //             to_name: `${order.formData.name}`,
-            //             from_name: 'ABISHADGURU',
-            //             order_id:`${order._id}`,
-            //             cart_item: `${order.cartItems.map((item,index) => `${index+1}).Course Name:${item.title}--Quantity:${item.quantity}Nos--Price:₹${item.price}/-`).join(',')}`,
-            //             total_price:`₹${order.totalPrice}`,
-            //             razorpayInfo_paymentId:`${order.razorpayInfo.paymentId}`,
-            //         };
+            axios(config)
+                .then(response => {
+                    const order = response.data.order;
+                    // const templateParams = {
+                    //     mobile_from:"9597087830",
+                    //     email_from:"xxxxx@gmail.com",
+                    //     email_to: `${order.formData.email}`,
+                    //     to_name: `${order.formData.name}`,
+                    //     from_name: 'ABISHADGURU',
+                    //     order_id:`${order._id}`,
+                    //     cart_item: `${order.cartItems.map((item,index) => `${index+1}).Course Name:${item.title}--Quantity:${item.quantity}Nos--Price:₹${item.price}/-`).join(',')}`,
+                    //     total_price:`₹${order.totalPrice}`,
+                    //     razorpayInfo_paymentId:`${order.razorpayInfo.paymentId}`,
+                    // };
 
-            //         emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
-            //             publicKey: 'DT7q2FNyO0BX-rkLf',
-            //         })
-            //             .then(() => {
-            //                 console.log('Order summary email sent successfully!');
-            //             })
-            //             .catch((error) => {
-            //                 console.error('Error sending email:', error);
-            //             });
-            //         setOpen(false);
-            //         setOpenpd(false);
-            //         setOpenpg(true);
-            //         setIsLoading(false);
-            //     })
-            //     .catch(error => {
-            //         // Handle error
-            //         console.error('Error creating order:', error);
-            //     });
+                    // emailjs.send('service_f2a66s1', 'template_spl2zd9', templateParams, {
+                    //     publicKey: 'DT7q2FNyO0BX-rkLf',
+                    // })
+                    //     .then(() => {
+                    //         console.log('Order summary email sent successfully!');
+                    //     })
+                    //     .catch((error) => {
+                    //         console.error('Error sending email:', error);
+                    //     });
+                    setOpen(false);
+                    setOpenpd(false);
+                    setOpenpg(true);
+                    setIsLoading(false);
+                })
+                .catch(error => {
+                    // Handle error
+                    console.error('Error creating order:', error);
+                });
         }
     }, [razorpayInfo, formData, cart]);
 
@@ -236,10 +236,6 @@ export default function Cart() {
                 alert(response.error.reason);
                 alert(response.error.metadata.order_id);
                 alert(response.error.metadata.payment_id);
-            });
-            rzp1.on("payment.success", function (response) {
-                setIsLoading(false);
-                setOpenpd(false);
             });
             rzp1.open();
         } catch (error) {
@@ -523,7 +519,7 @@ export default function Cart() {
                                             </div>
                                         </div>
                                         <div className="mt-2 px-4">
-                                            <p className="text-sm ms-3 leading-3 text-gray-500">
+                                            <p className="text-sm text-center lg:ms-3 leading-3 text-gray-500">
                                                 By providing your details, you agree to our <button onClick={() => { setOpenpp(true); setOpenpd(false) }} className='text-black p-1 hover:hover:text-amber-500'>Terms and Condition</button> and <button onClick={() => { setOpenpp(true); setOpenpd(false) }} className='text-black p-1 hover:hover:text-amber-500'>Privacy Policy</button>.
                                             </p>
                                         </div>
@@ -552,7 +548,7 @@ export default function Cart() {
             </Transition.Root>
             {/*Guidline dialogue */}
             <Transition.Root show={openpg} as={Fragment}>
-                <Dialog className="relative z-10" initialFocus={cancelButtonRef} onClose={setOpenpg}>
+                <Dialog className="relative z-10" initialFocus={cancelButtonRef} onClose={handleClearLocalStorage}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
