@@ -40,7 +40,7 @@ function CourseSelling() {
             <h2 className="text-3xl font-bold tracking-tight text-white sm:text-5xl">
               OUR COURSES <span className='text-amber-500'>TAILORED TO SHINE</span> WIDER
             </h2>
-            <p className="mt-6 text-lg leading-8 text-gray-300">
+            <p className="mt-6 text-xl lg:leading-8 text-gray-300">
               Each Handpicks has been <span className='text-amber-500'>Crafted for professionals and students</span>, which empowers individuals to navigate through obstacles with renewed vigour.
             </p>
             <div className="mt-10 hidden lg:flex items-center justify-center gap-x-6 lg:justify-start">
